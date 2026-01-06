@@ -1,6 +1,7 @@
 import React, { useEffect } from "react"
 import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import {Link} from "react-router-dom";
 
 export const Home = () => {
 
@@ -46,6 +47,9 @@ export const Home = () => {
 						Loading message from the backend (make sure your python 🐍 backend is running)...
 					</span>
 				)}
+			</div>
+			<div className="">
+				<Link to={"/login"}>Iniciar Sesión</Link>
 			</div>
 		</div>
 	);

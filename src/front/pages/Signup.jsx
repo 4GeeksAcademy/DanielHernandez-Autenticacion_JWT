@@ -5,30 +5,45 @@ export const Signup = () => {
     // Estado local para entradas controladas
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+
     const navigate = useNavigate();
 
     // Maneja el registro de usuarios
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setErrorMsg("");
+        setIsSubmitting(true);
 
-        const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/signup`,
-            {
+        try {
+            const backendUrl = import.meta.env.VITE_BACKEND_URL;
+            if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined");
+
+            const response = await fetch(`${backendUrl}/api/signup`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                setErrorMsg(data?.msg || "Registration failed");
+                return;
             }
-        );
 
-        if (!response.ok) {
-            alert("Registration failed");
-            return;
+            // Borrar formulario
+            setEmail("");
+            setPassword("");
+
+            // Redirigir al login tras crear usuario
+            navigate("/login");
+        } catch (err) {
+            setErrorMsg(err?.message || "Unexpected error");
+        } finally {
+            setIsSubmitting(false);
         }
-
-        // Borrar formulario y redirigir para iniciar sesión
-        setEmail("");
-        setPassword("");
-        navigate("/login");
     };
 
     return (
@@ -54,8 +69,14 @@ export const Signup = () => {
                     required
                 />
 
-                <button className="btn btn-primary mt-3 w-100">
-                    Create account
+                {errorMsg && (
+                    <div className="alert alert-danger mt-3 mb-0">
+                        {errorMsg}
+                    </div>
+                )}
+
+                <button className="btn btn-primary mt-3 w-100" disabled={isSubmitting}>
+                    {isSubmitting ? "Creating..." : "Create account"}
                 </button>
 
                 <Link to="/login" className="d-block mt-3">

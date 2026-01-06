@@ -12,6 +12,14 @@ class User(db.Model):
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
 
 
+    # Password helpers
+    # Guardamos SIEMPRE el hash, nunca el password en plano.
+    def set_password(self, raw_password: str):
+        self.password = generate_password_hash(raw_password)
+
+    def check_password(self, raw_password: str) -> bool:
+        return check_password_hash(self.password, raw_password)
+
     def serialize(self):
         return {
             "id": self.id,
