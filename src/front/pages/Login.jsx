@@ -49,7 +49,7 @@ export const Login = () => {
                     <button type="submit" className="btn btn-primary px-5">Entrar</button>
                 </div>
                 <div className="col-12 my-3">
-                    <Link to={"/Signup"} className="" >Registrarse</Link>
+                    <Link to={"/signup"} className="" >Registrarse</Link>
                 </div>
 
 
