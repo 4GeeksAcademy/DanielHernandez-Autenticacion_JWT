@@ -54,16 +54,16 @@ export const Navbar = () => {
 								<button className="btn btn-primary">Private</button>
 							</Link>
 							<button className="btn btn-secondary" onClick={handleLogout}>
-								Logout
+								Log out
 							</button>
 						</>
 					) : (
 						<>
 							<Link to="/login">
-								<button className="btn btn-primary">Login</button>
+								<button className="btn btn-primary">Log in</button>
 							</Link>
 							<Link to="/signup">
-								<button className="btn btn-outline-secondary">Signup</button>
+								<button className="btn btn-outline-secondary">Sign up</button>
 							</Link>
 						</>
 					)}

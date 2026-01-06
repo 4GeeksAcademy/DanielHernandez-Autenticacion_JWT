@@ -49,7 +49,7 @@ export const Home = () => {
 				)}
 			</div>
 			<div className="">
-				<Link to={"/login"}>Iniciar Sesión</Link>
+				<Link to={"/login"}>Log in</Link>
 			</div>
 		</div>
 	);

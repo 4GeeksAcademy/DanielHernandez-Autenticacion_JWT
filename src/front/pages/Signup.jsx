@@ -80,7 +80,7 @@ export const Signup = () => {
                 </button>
 
                 <Link to="/login" className="d-block mt-3">
-                    ¿Ya tienes cuenta?
+                    Already have an account?
                 </Link>
             </form>
         </div>
