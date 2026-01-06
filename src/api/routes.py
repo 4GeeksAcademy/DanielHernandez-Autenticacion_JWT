@@ -9,21 +9,15 @@ api = Blueprint("api", __name__)
 
 
 # Endpoint de prueba para confirmar que el backend responde.
-# Añadimos OPTIONS para ayudar con el preflight del navegador.
-@api.route("/hello", methods=["POST", "GET", "OPTIONS"])
+@api.route("/hello", methods=["POST", "GET"])
 def handle_hello():
-    if request.method == "OPTIONS":
-        return jsonify({"msg": "ok"}), 200
-
     return jsonify({"message": "Backend is alive!"}), 200
 
 
 # Registro de usuario
 # Guardamos contraseña con hash (User.set_password)
-@api.route("/signup", methods=["POST", "OPTIONS"])
+@api.route("/signup", methods=["POST"])
 def register_user():
-    if request.method == "OPTIONS":
-        return jsonify({"msg": "ok"}), 200
 
     data = request.get_json() or {}
     email = (data.get("email") or "").strip().lower()
@@ -46,10 +40,8 @@ def register_user():
 
 # Login: Devuelve un token si las credenciales son correctas
 # Validamos contraseña con hash (User.check_password).
-@api.route("/login", methods=["POST", "OPTIONS"])
+@api.route("/login", methods=["POST"])
 def login_user():
-    if request.method == "OPTIONS":
-        return jsonify({"msg": "ok"}), 200
 
     data = request.get_json() or {}
     email = (data.get("email") or "").strip().lower()
