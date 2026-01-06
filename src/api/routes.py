@@ -19,6 +19,7 @@ def handle_hello():
 
 
 # Registro de usuario
+# Guardamos contraseña con hash (User.set_password)
 @api.route("/signup", methods=["POST", "OPTIONS"])
 def register_user():
     if request.method == "OPTIONS":
@@ -35,11 +36,7 @@ def register_user():
         return jsonify({"msg": "User already exists"}), 409
 
     new_user = User(email=email, is_active=True)
-
-    if hasattr(new_user, "set_password"):
-        new_user.set_password(password)
-    else:
-        new_user.password = password  # fallback
+    new_user.set_password(password)
 
     db.session.add(new_user)
     db.session.commit()
@@ -47,7 +44,8 @@ def register_user():
     return jsonify({"msg": "User created successfully"}), 201
 
 
-# Devuelve un token si las credenciales son correctas
+# Login: Devuelve un token si las credenciales son correctas
+# Validamos contraseña con hash (User.check_password).
 @api.route("/login", methods=["POST", "OPTIONS"])
 def login_user():
     if request.method == "OPTIONS":
@@ -61,24 +59,14 @@ def login_user():
         return jsonify({"msg": "Missing email or password"}), 400
 
     user = User.query.filter_by(email=email).first()
-
-    # Si el modelo tiene check_password, valida hash.
-    if not user:
+    if not user or not user.check_password(password):
         return jsonify({"msg": "Invalid credentials"}), 401
-
-    if hasattr(user, "check_password"):
-        if not user.check_password(password):
-            return jsonify({"msg": "Invalid credentials"}), 401
-    else:
-        # fallback si se guarda en plano
-        if user.password != password:
-            return jsonify({"msg": "Invalid credentials"}), 401
 
     token = create_access_token(identity=str(user.id))
     return jsonify({"token": token, "user": user.serialize()}), 200
 
 
-# Ruta privada: requiere autorización del token
+# Ruta privada: requiere token válido
 @api.route("/private", methods=["GET"])
 @jwt_required()
 def private_route():
