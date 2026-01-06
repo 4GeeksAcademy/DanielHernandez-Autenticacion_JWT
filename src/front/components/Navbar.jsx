@@ -1,15 +1,34 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 export const Navbar = () => {
 	const navigate = useNavigate();
+	const location = useLocation();
+
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+	// Recalcula si hay token cada vez que cambie la ruta.
+	// Esto hace que al navegar tras hacer login, el navbar se actualice.
 	useEffect(() => {
-		// Comprobación simple: si hay token, consideramos logueado
 		const token = sessionStorage.getItem("token");
 		setIsLoggedIn(!!token);
+	}, [location.pathname]);
+
+	// escucha cambios en sessionStorage
+	// Actualiza el NAv si el token cambia en otra pestaña
+	useEffect(() => {
+		const onStorageChange = () => {
+			const token = sessionStorage.getItem("token");
+			setIsLoggedIn(!!token);
+		};
+
+		window.addEventListener("storage", onStorageChange);
+
+		return () => {
+			window.removeEventListener("storage", onStorageChange);
+		};
 	}, []);
+
 
 	const handleLogout = () => {
 		sessionStorage.removeItem("token");
